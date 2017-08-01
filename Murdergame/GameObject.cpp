@@ -17,7 +17,17 @@ GameObject::~GameObject()
 
 void GameObject::update()
 {
+	advanceCurrentFrame();
+}
+
+void GameObject::updatePosition()
+{
 	position += direction * speed;
+}
+
+void GameObject::setState(State newState)
+{
+	state = newState;
 }
 
 void GameObject::setPosition(Vec2 pos)
@@ -53,9 +63,19 @@ void GameObject::setCurrentFrame(int f)
 void GameObject::advanceCurrentFrame()
 {
 	currentFrame++;
-	if (currentFrame > (currentAnimation.frameCount * currentAnimation.speed)-1) {
-		currentFrame = 0;
+	if (currentAnimationOver()) {
+		if (currentAnimation.loop) {
+			currentFrame = 0;
+		}
 	}
+}
+
+bool GameObject::currentAnimationOver()
+{
+	if (currentFrame > (currentAnimation.frameCount * currentAnimation.speed) - 1) {
+		return true;
+	}
+	return false;
 }
 
 void GameObject::draw(sf::RenderTarget & target, sf::RenderStates states) const 

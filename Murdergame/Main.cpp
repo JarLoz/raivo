@@ -34,16 +34,9 @@ int main()
 	// Gameloop
 	while (window.isOpen())
 	{
-		//Check window events
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
+		//Check if window is to be closed
+		if (InputManager::getInstance()->closeGame(window)) {
 				window.close();
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-			window.close();
 		}
 
 		// Do the updates
@@ -57,14 +50,12 @@ int main()
 			i++;
 		}
 		window.draw(*gameObjectManager->getPlayer());
-		gameObjectManager->getPlayer()->advanceCurrentFrame();
 
 		//Draw mouse pointer
 		sf::CircleShape mousePointer;
 		mousePointer.setRadius(1.f);
 		mousePointer.setFillColor(sf::Color::Blue);
-		//sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-		Vec2 mousePosition = InputManager::getMousePosition(window);
+		Vec2 mousePosition = InputManager::getInstance()->getMousePosition(window);
 		Vec2 drawPosition = (mousePosition - cameraPosition) * SCALE_FACTOR;
 		drawPosition.x += RESOLUTION_X / 2;
 		drawPosition.y = RESOLUTION_Y / 2 - drawPosition.y;

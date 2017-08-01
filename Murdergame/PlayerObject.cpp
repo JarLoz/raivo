@@ -1,5 +1,6 @@
 #include "PlayerObject.h"
 #include "GameObjectManager.h"
+#include "InputManager.h"
 
 
 PlayerObject::PlayerObject()
@@ -14,11 +15,17 @@ PlayerObject::~PlayerObject()
 
 void PlayerObject::update()
 {
-	// Set the direction of movement
-	direction = getDirection();
+	advanceCurrentFrame();
+	handleInput();
+	if (state == GameObject::ATTACK_WINDUP && currentAnimationOver()) {
+		setState(GameObject::IDLE);
+		setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
+		setCurrentFrame(0);
+	}
+}
 
-	// Update position. 
-
+void PlayerObject::updatePosition()
+{
 	// Calculate new position without collisions.
 	Vec2 newPosition = position + direction * speed;
 
@@ -44,34 +51,27 @@ void PlayerObject::update()
 Vec2 PlayerObject::getDirection()
 {
 	// Get keyboard input, set direction.
-	bool hasMovementInput = false;
-	Vec2 newDirection = VEC_NULL;
-	if (sf::Keyboard::isKeyPressed(MOVE_RIGHT)) {
-		newDirection += VEC_RIGHT;
-		hasMovementInput = true;
-	}
-	if (sf::Keyboard::isKeyPressed(MOVE_LEFT)) {
-		newDirection += VEC_LEFT;
-		hasMovementInput = true;
-	}
-	if (sf::Keyboard::isKeyPressed(MOVE_UP)) {
-		newDirection += VEC_UP;
-		hasMovementInput = true;
-	}
-	if (sf::Keyboard::isKeyPressed(MOVE_DOWN)) {
-		newDirection += VEC_DOWN;
-		hasMovementInput = true;
-	}
+	Vec2 newDirection = InputManager::getInstance()->getDirection();
+	bool hasMovementInput = (newDirection != VEC_NULL);
 	if (hasMovementInput && acceleration < 1.f) {
 		acceleration += PLAYER_ACCELERATION_INCREMENT;
 	}
 	if(!hasMovementInput && acceleration > 0.f) {
 		acceleration -= PLAYER_ACCELERATION_INCREMENT;
 	}
-	if (hasMovementInput) {
-		return normalizeVec(newDirection) * acceleration;
-	}
-	else {
-		return direction * acceleration;
+	return newDirection * acceleration;
+}
+
+void PlayerObject::handleInput()
+{
+	if (state == GameObject::IDLE || state == GameObject::MOVING) {
+		// Set the direction of movement
+		direction = getDirection();
+		if (InputManager::getInstance()->getMouseClickLeft()) {
+			direction = VEC_NULL;
+			setState(GameObject::ATTACK_WINDUP);
+			setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK_WINDUP]);
+			setCurrentFrame(0);
+		}
 	}
 }

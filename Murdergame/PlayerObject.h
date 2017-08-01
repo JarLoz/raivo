@@ -11,7 +11,9 @@ public:
 	PlayerObject();
 	~PlayerObject();
 	void update();
+	void updatePosition();
 private:
 	Vec2 getDirection();
+	void handleInput();
 };
 

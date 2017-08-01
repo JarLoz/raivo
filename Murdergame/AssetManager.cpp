@@ -21,7 +21,7 @@ AssetManager::~AssetManager()
 
 void AssetManager::loadAssets()
 {
-	playerTexture.loadFromFile(ASSET_PATH + "hero_anim_idle.png");
+	playerTexture.loadFromFile(ASSET_PATH + "hero.png");
 	enemyTexture.loadFromFile(ASSET_PATH + "enemy.png");
 	font.loadFromFile(ASSET_PATH + "arial.ttf");
 }
@@ -35,6 +35,7 @@ sf::Sprite AssetManager::getAnimationFrame(AnimationId animId, int frame)
 
 	switch (animId) {
 	case AnimationId::PLAYER_IDLE :
+	case AnimationId::PLAYER_ATTACK_WINDUP:
 		frameSprite.setTexture(playerTexture);
 		break;
 	case AnimationId::ENEMY_IDLE :

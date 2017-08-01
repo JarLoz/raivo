@@ -34,6 +34,7 @@ void GameObjectManager::addPlayer(Vec2 position)
 	player->setSpeed(PLAYER_SPEED);
 	player->setCurrentAnimation(ANIMATIONS.at(PLAYER_IDLE));
 	player->setCurrentFrame(0);
+	player->setState(GameObject::IDLE);
 }
 
 PlayerObject * GameObjectManager::getPlayer()
@@ -48,6 +49,7 @@ void GameObjectManager::addEnemy(Vec2 position)
 	enemy->setSpeed(ENEMY_SPEED);
 	enemy->setCurrentAnimation(ANIMATIONS.at(ENEMY_IDLE));
 	enemy->setCurrentFrame(0);
+	enemy->setState(GameObject::IDLE);
 	enemies.push_back(enemy);
 }
 
@@ -63,6 +65,15 @@ void GameObjectManager::update()
 	while (i != enemies.end()) {
 		GameObject* current = *i;
 		current->update();
+		i++;
+	}
+
+	player->updatePosition();
+
+	i = enemies.begin();
+	while (i != enemies.end()) {
+		GameObject* current = *i;
+		current->updatePosition();
 		i++;
 	}
 }

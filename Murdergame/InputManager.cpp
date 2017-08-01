@@ -49,7 +49,6 @@ Vec2 InputManager::getMousePosition(const sf::Window & relativeTo)
 	return gamePosition;
 }
 
-/*
 bool InputManager::getMouseClickLeft()
 {
 	bool currentState = sf::Mouse::isButtonPressed(sf::Mouse::Left);
@@ -73,4 +72,20 @@ bool InputManager::getMouseClickRight()
 		return false;
 	}
 }
-*/
+
+bool InputManager::closeGame(sf::Window & window)
+{
+		//Check window events
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed) {
+				return true;
+			}
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+			return true;
+		}
+	return false;
+}

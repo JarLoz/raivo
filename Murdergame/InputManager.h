@@ -3,18 +3,17 @@
 #include "Globals.h"
 class InputManager
 {
+	bool mousePressedLeft;
+	bool mousePressedRight;
 public:
 	static InputManager* manager;
-	static bool mousePressedLeft;
-	static bool mousePressedRight;
 	static InputManager* getInstance();
 	InputManager();
 	~InputManager();
-	static Vec2 getDirection();
-	static Vec2 getMousePosition(const sf::Window &relativeTo);
-	/*
-	static bool getMouseClickLeft();
-	static bool getMouseClickRight();
-	*/
+	Vec2 getDirection();
+	Vec2 getMousePosition(const sf::Window &relativeTo);
+	bool getMouseClickLeft();
+	bool getMouseClickRight();
+	bool closeGame(sf::Window & window);
 };
 
