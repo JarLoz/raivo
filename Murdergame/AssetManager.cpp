@@ -36,6 +36,8 @@ sf::Sprite AssetManager::getAnimationFrame(AnimationId animId, int frame)
 	switch (animId) {
 	case AnimationId::PLAYER_IDLE :
 	case AnimationId::PLAYER_ATTACK_WINDUP:
+	case AnimationId::PLAYER_ATTACK:
+	case AnimationId::PLAYER_SWORD_WHOOSH:
 		frameSprite.setTexture(playerTexture);
 		break;
 	case AnimationId::ENEMY_IDLE :

@@ -42,6 +42,7 @@ public:
 
 	// Do the ingame units -> pixel coordinates conversion.
 	Vec2 getDrawPosition() const;
+	Vec2 getDrawPosition(Vec2 offset) const;
 	sf::CircleShape getHitCircle(sf::Color color) const;
 };
 

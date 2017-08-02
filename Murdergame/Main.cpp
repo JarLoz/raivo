@@ -34,6 +34,7 @@ int main()
 	// Gameloop
 	while (window.isOpen())
 	{
+		InputManager::getInstance()->updateInputs(window);
 		//Check if window is to be closed
 		if (InputManager::getInstance()->closeGame(window)) {
 				window.close();
@@ -55,7 +56,7 @@ int main()
 		sf::CircleShape mousePointer;
 		mousePointer.setRadius(1.f);
 		mousePointer.setFillColor(sf::Color::Blue);
-		Vec2 mousePosition = InputManager::getInstance()->getMousePosition(window);
+		Vec2 mousePosition = InputManager::getInstance()->getMousePosition();
 		Vec2 drawPosition = (mousePosition - cameraPosition) * SCALE_FACTOR;
 		drawPosition.x += RESOLUTION_X / 2;
 		drawPosition.y = RESOLUTION_Y / 2 - drawPosition.y;

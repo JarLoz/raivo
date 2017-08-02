@@ -17,10 +17,19 @@ void PlayerObject::update()
 {
 	advanceCurrentFrame();
 	handleInput();
-	if (state == GameObject::ATTACK_WINDUP && currentAnimationOver()) {
-		setState(GameObject::IDLE);
-		setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
-		setCurrentFrame(0);
+	if (currentAnimationOver()) {
+		switch (state) {
+			case GameObject::ATTACK_WINDUP:
+				setState(GameObject::ATTACK);
+				setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK]);
+				setCurrentFrame(0);
+				break;
+			case GameObject::ATTACK:
+				setState(GameObject::IDLE);
+				setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
+				setCurrentFrame(0);
+				break;
+		}
 	}
 }
 
@@ -48,6 +57,20 @@ void PlayerObject::updatePosition()
 
 }
 
+void PlayerObject::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	//Draw the base sprite
+	GameObject::draw(target, states);
+	//If attacking, draw the sword sprite
+	if (state == GameObject::ATTACK) {
+		sf::Sprite swordSprite = AssetManager::getInstance()->getAnimationFrame(PLAYER_SWORD_WHOOSH, currentFrame);
+		swordSprite.setPosition(getDrawPosition(attackDirection * 1.8f));
+		float angle = atan2(attackDirection.y, attackDirection.x) * (180.f / 3.14f) * -1.f;
+		swordSprite.setRotation(angle);
+		target.draw(swordSprite);
+	}
+}
+
 Vec2 PlayerObject::getDirection()
 {
 	// Get keyboard input, set direction.
@@ -67,8 +90,11 @@ void PlayerObject::handleInput()
 	if (state == GameObject::IDLE || state == GameObject::MOVING) {
 		// Set the direction of movement
 		direction = getDirection();
+		// If attack input, initiate attack sequence
 		if (InputManager::getInstance()->getMouseClickLeft()) {
 			direction = VEC_NULL;
+			attackDirection = normalizeVec(InputManager::getInstance()->getMousePosition() - position);
+			std::cout << "AttackDirection x: " << attackDirection.x << " y: " << attackDirection.y << "\n";
 			setState(GameObject::ATTACK_WINDUP);
 			setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK_WINDUP]);
 			setCurrentFrame(0);

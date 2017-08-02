@@ -19,7 +19,7 @@ InputManager::~InputManager()
 {
 }
 
-Vec2 InputManager::getDirection()
+void InputManager::updateInputs(const sf::Window & relativeTo)
 {
 	// Get keyboard input, set direction.
 	Vec2 newDirection = VEC_NULL;
@@ -35,42 +35,58 @@ Vec2 InputManager::getDirection()
 	if (sf::Keyboard::isKeyPressed(MOVE_DOWN)) {
 		newDirection += VEC_DOWN;
 	}
-	return normalizeVec(newDirection);
-}
+	movementDirection = normalizeVec(newDirection);
 
-Vec2 InputManager::getMousePosition(const sf::Window & relativeTo)
-{
+	// Find mouse position
 	Vec2 mousePositionInPixels(sf::Mouse::getPosition(relativeTo));
 
 	mousePositionInPixels.x -= RESOLUTION_X / 2;
 	mousePositionInPixels.y = RESOLUTION_Y / 2 - mousePositionInPixels.y;
-	Vec2 gamePosition = (mousePositionInPixels / SCALE_FACTOR) + cameraPosition;
+	mousePosition = (mousePositionInPixels / SCALE_FACTOR) + cameraPosition;
 
-	return gamePosition;
+
+	// Get mouse button states.
+	bool currentState = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+	if (currentState && !mousePressedLeft) {
+		mousePressedLeft = true;
+		mouseClickLeft = true;
+	} else {
+		mousePressedLeft = currentState;
+		mouseClickLeft = false;
+	}
+	currentState = sf::Mouse::isButtonPressed(sf::Mouse::Right);
+	if (currentState && !mousePressedRight) {
+		mousePressedRight = true;
+		mouseClickRight = true;
+	} else {
+		mousePressedRight = currentState;
+		mouseClickRight = false;
+	}
+}
+
+Vec2 InputManager::getDirection()
+{
+	return movementDirection;
+}
+
+Vec2 InputManager::getMousePosition()
+{
+	return mousePosition;
 }
 
 bool InputManager::getMouseClickLeft()
 {
-	bool currentState = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-	if (currentState && !mousePressedLeft) {
-		mousePressedLeft = true;
-		return true;
-	} else {
-		mousePressedLeft = currentState;
-		return false;
-	}
+	return mouseClickLeft;
 }
 
 bool InputManager::getMouseClickRight()
 {
-	bool currentState = sf::Mouse::isButtonPressed(sf::Mouse::Right);
-	if (currentState && !mousePressedRight) {
-		mousePressedRight = true;
-		return true;
-	} else {
-		mousePressedRight = currentState;
-		return false;
-	}
+	return mouseClickRight;
+}
+
+bool InputManager::getAttack()
+{
+	return getMouseClickLeft();
 }
 
 bool InputManager::closeGame(sf::Window & window)

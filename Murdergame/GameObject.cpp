@@ -90,7 +90,12 @@ void GameObject::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 Vec2 GameObject::getDrawPosition() const
 {
-	Vec2 drawPosition = (position - cameraPosition) * SCALE_FACTOR;
+	return getDrawPosition(VEC_NULL);
+}
+
+Vec2 GameObject::getDrawPosition(Vec2 offset) const
+{
+	Vec2 drawPosition = ((position + offset) - cameraPosition) * SCALE_FACTOR;
 	drawPosition.x += RESOLUTION_X / 2;
 	drawPosition.y = RESOLUTION_Y / 2 - drawPosition.y;
 
