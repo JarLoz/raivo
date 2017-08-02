@@ -18,6 +18,7 @@ public:
 private:
 	Vec2 attackDirection;
 	Vec2 getDirection();
+	Vec2 getRelativeMouseDirection() const;
 	void handleInput();
 };
 

@@ -23,11 +23,14 @@ void PlayerObject::update()
 				setState(GameObject::ATTACK);
 				setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK]);
 				setCurrentFrame(0);
+				setSpeed(0);
+				direction = attackDirection;
 				break;
 			case GameObject::ATTACK:
 				setState(GameObject::IDLE);
 				setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
 				setCurrentFrame(0);
+				setSpeed(PLAYER_SPEED);
 				break;
 		}
 	}
@@ -59,11 +62,41 @@ void PlayerObject::updatePosition()
 
 void PlayerObject::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
+	if (DRAW_HITBOXES) {
+		target.draw(getHitCircle(sf::Color::Red));
+	}
+
 	//Draw the base sprite
-	GameObject::draw(target, states);
+	sf::Sprite objectSprite = AssetManager::getInstance()->getAnimationFrame(currentAnimation.id, currentFrame);
+	Vec2 mouseDir = getRelativeMouseDirection();
+	switch (state) {
+		case GameObject::IDLE:
+		case GameObject::MOVING:
+			if (mouseDir.x < 0) {
+				objectSprite.setScale(-1, 1);
+			}
+			break;
+		case GameObject::ATTACK:
+		case GameObject::ATTACK_WINDUP:
+		case GameObject::ATTACK_COOLDOWN:
+			if (attackDirection.x < 0) {
+				objectSprite.setScale(-1, 1);
+			}
+			break;
+	}
+	objectSprite.setPosition(getDrawPosition());
+	target.draw(objectSprite);
+
+
+
 	//If attacking, draw the sword sprite
 	if (state == GameObject::ATTACK) {
 		sf::Sprite swordSprite = AssetManager::getInstance()->getAnimationFrame(PLAYER_SWORD_WHOOSH, currentFrame);
+		// Flip the sprite around based on attack direction.
+		if ((attackDirection.x < 0 && attackDirection.y < 0) || 
+			(attackDirection.x > 0 && attackDirection.y > 0)) {
+			swordSprite.setScale(1, -1);
+		}
 		swordSprite.setPosition(getDrawPosition(attackDirection * 1.8f));
 		float angle = atan2(attackDirection.y, attackDirection.x) * (180.f / 3.14f) * -1.f;
 		swordSprite.setRotation(angle);
@@ -85,19 +118,25 @@ Vec2 PlayerObject::getDirection()
 	return newDirection * acceleration;
 }
 
+Vec2 PlayerObject::getRelativeMouseDirection() const
+{
+	return normalizeVec(InputManager::getInstance()->getMousePosition() - position);
+}
+
 void PlayerObject::handleInput()
 {
-	if (state == GameObject::IDLE || state == GameObject::MOVING) {
+	if (state == GameObject::IDLE || state == GameObject::MOVING || state == GameObject::ATTACK_WINDUP) {
 		// Set the direction of movement
 		direction = getDirection();
+	}
+	if (state == GameObject::IDLE || state == GameObject::MOVING) {
 		// If attack input, initiate attack sequence
 		if (InputManager::getInstance()->getMouseClickLeft()) {
-			direction = VEC_NULL;
-			attackDirection = normalizeVec(InputManager::getInstance()->getMousePosition() - position);
-			std::cout << "AttackDirection x: " << attackDirection.x << " y: " << attackDirection.y << "\n";
+			attackDirection = getRelativeMouseDirection();
 			setState(GameObject::ATTACK_WINDUP);
 			setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK_WINDUP]);
 			setCurrentFrame(0);
+			setSpeed(PLAYER_SPEED / 2);
 		}
 	}
 }
