@@ -30,6 +30,7 @@ GameObjectManager::~GameObjectManager()
 void GameObjectManager::addPlayer(Vec2 position)
 {
 	player = new PlayerObject();
+	player->setRadius(PLAYER_SIZE);
 	player->setPosition(position);
 	player->setSpeed(PLAYER_SPEED);
 	player->setCurrentAnimation(ANIMATIONS.at(PLAYER_IDLE));
@@ -45,6 +46,7 @@ PlayerObject * GameObjectManager::getPlayer()
 void GameObjectManager::addEnemy(Vec2 position)
 {
 	EnemyObject* enemy = new EnemyObject();
+	enemy->setRadius(ENEMY_SIZE);
 	enemy->setPosition(position);
 	enemy->setSpeed(ENEMY_SPEED);
 	enemy->setCurrentAnimation(ANIMATIONS.at(ENEMY_IDLE));

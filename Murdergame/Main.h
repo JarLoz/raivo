@@ -33,6 +33,11 @@ const float PLAYER_SPEED = 0.2f;
 const float PLAYER_ACCELERATION_INCREMENT = 0.1f;
 const float ENEMY_SPEED = 0.1f;
 
+// Size values
+const float PLAYER_SIZE = 1.f;
+const float PLAYER_ATTACK_SIZE = 1.f;
+const float ENEMY_SIZE = 1.f;
+
 // Asset path
 const std::string ASSET_PATH = "D:/dev/assets/";
 

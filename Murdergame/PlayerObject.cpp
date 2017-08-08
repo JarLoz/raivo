@@ -15,15 +15,18 @@ PlayerObject::~PlayerObject()
 
 void PlayerObject::update()
 {
+	// Tick over the frame counter
 	advanceCurrentFrame();
+	// Do all input-related things
 	handleInput();
+	// Handle state changes based on animations ending
 	if (currentAnimationOver()) {
 		switch (state) {
 			case GameObject::ATTACK_WINDUP:
 				setState(GameObject::ATTACK);
 				setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK]);
 				setCurrentFrame(0);
-				setSpeed(0);
+				setSpeed(PLAYER_SPEED*2);
 				direction = attackDirection;
 				break;
 			case GameObject::ATTACK:
@@ -31,6 +34,17 @@ void PlayerObject::update()
 				setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
 				setCurrentFrame(0);
 				setSpeed(PLAYER_SPEED);
+				break;
+		}
+	}
+	// If animations still running, handle other triggers.
+	else {
+		switch (state) {
+			// First 3 frames of attack animation move the player forwards towards the attack.
+			case GameObject::ATTACK:
+				if (currentFrame == 3) {
+					setSpeed(0);
+				}
 				break;
 		}
 	}
@@ -64,6 +78,19 @@ void PlayerObject::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 {
 	if (DRAW_HITBOXES) {
 		target.draw(getHitCircle(sf::Color::Red));
+		if (state == GameObject::ATTACK) {
+			//hit circle for attacking
+			float scaledRadius = PLAYER_ATTACK_SIZE * SCALE_FACTOR;
+			sf::CircleShape circle;
+			circle.setRadius(scaledRadius);
+			circle.setOrigin(scaledRadius, scaledRadius);
+			circle.setOutlineColor(sf::Color::Red);
+			circle.setFillColor(sf::Color::Transparent);
+			circle.setOutlineThickness(1);
+			circle.setPosition(getDrawPosition(attackDirection*1.8f));
+
+			target.draw(circle);
+		}
 	}
 
 	//Draw the base sprite
@@ -93,8 +120,7 @@ void PlayerObject::draw(sf::RenderTarget & target, sf::RenderStates states) cons
 	if (state == GameObject::ATTACK) {
 		sf::Sprite swordSprite = AssetManager::getInstance()->getAnimationFrame(PLAYER_SWORD_WHOOSH, currentFrame);
 		// Flip the sprite around based on attack direction.
-		if ((attackDirection.x < 0 && attackDirection.y < 0) || 
-			(attackDirection.x > 0 && attackDirection.y > 0)) {
+		if (attackDirection.x < 0) {
 			swordSprite.setScale(1, -1);
 		}
 		swordSprite.setPosition(getDrawPosition(attackDirection * 1.8f));
