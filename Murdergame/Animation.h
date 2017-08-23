@@ -36,9 +36,9 @@ public:
 };
 // Collection of all animations.
 static std::unordered_map<AnimationId, Animation> ANIMATIONS { 
-	{PLAYER_IDLE,Animation(PLAYER_IDLE,0,4,80,80,50,50,5,true)},
-	{PLAYER_ATTACK_WINDUP,Animation(PLAYER_ATTACK_WINDUP,80,4,80,80,50,50,4,false)},
-	{PLAYER_ATTACK,Animation(PLAYER_ATTACK,160,1,80,80,50,50,24,false)},
-	{PLAYER_SWORD_WHOOSH,Animation(PLAYER_SWORD_WHOOSH,240,4,80,80,40,50,6,false)},
+	{PLAYER_IDLE,Animation(PLAYER_IDLE,0,4,80,80,50,50,20,true)},
+	{PLAYER_ATTACK_WINDUP,Animation(PLAYER_ATTACK_WINDUP,80,4,80,80,50,50,16,false)},
+	{PLAYER_ATTACK,Animation(PLAYER_ATTACK,160,1,80,80,50,50,16,false)},
+	{PLAYER_SWORD_WHOOSH,Animation(PLAYER_SWORD_WHOOSH,240,4,80,80,40,50,16,false)},
 	{ENEMY_IDLE,Animation(ENEMY_IDLE,0,1,60,68,30,34,1,true)}
 };

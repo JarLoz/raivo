@@ -8,6 +8,7 @@ class AssetManager
 	sf::Texture playerTexture;
 	sf::Texture enemyTexture;
 	sf::Font font;
+	sf::SoundBuffer playerSwordSwing;
 public:
 	static AssetManager* getInstance();
 	AssetManager();
@@ -15,5 +16,6 @@ public:
 	void loadAssets();
 	sf::Sprite getAnimationFrame(AnimationId animId, int frame);
 	sf::Font getFont();
+	sf::Sound getPlayerSwordSwingSound();
 };
 

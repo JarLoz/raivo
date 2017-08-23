@@ -1,8 +1,6 @@
 #pragma once
-class PlayerObject;
+#include "Main.h"
 #include "GameObject.h"
-#include "Globals.h"
-#include "Collision.h"
 
 class PlayerObject :
 	public GameObject
@@ -18,6 +16,7 @@ public:
 private:
 	Vec2 attackDirection;
 	Vec2 getDirection();
+	Vec2 getAttackPosition();
 	Vec2 getRelativeMouseDirection() const;
 	void handleInput();
 };

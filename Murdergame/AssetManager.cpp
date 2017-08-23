@@ -29,7 +29,7 @@ void AssetManager::loadAssets()
 sf::Sprite AssetManager::getAnimationFrame(AnimationId animId, int frame)
 {
 	Animation animation = ANIMATIONS[animId];
-	int framenumber = frame / animation.speed;
+	int framenumber = (float) frame * animation.frameCount / animation.speed;
 
 	sf::Sprite frameSprite;
 
@@ -54,4 +54,9 @@ sf::Sprite AssetManager::getAnimationFrame(AnimationId animId, int frame)
 sf::Font AssetManager::getFont()
 {
 	return font;
+}
+
+sf::Sound AssetManager::getPlayerSwordSwingSound()
+{
+	return sf::Sound(playerSwordSwing);
 }

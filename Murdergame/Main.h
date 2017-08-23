@@ -2,6 +2,7 @@
 // A header file to hold all the common sfml/system libraries and constants.
 #include <SFML\Graphics.hpp>
 #include <SFML\System.hpp>
+#include <SFML\Audio.hpp>
 #include <list>
 #include <unordered_map>
 #include <string>
@@ -35,11 +36,11 @@ const float ENEMY_SPEED = 0.1f;
 
 // Size values
 const float PLAYER_SIZE = 1.f;
-const float PLAYER_ATTACK_SIZE = 1.f;
+const float PLAYER_ATTACK_SIZE = 0.7f;
 const float ENEMY_SIZE = 1.f;
 
 // Asset path
-const std::string ASSET_PATH = "D:/dev/assets/";
+const std::string ASSET_PATH = "D:/dev/assets/murha/";
 
 // Debug constants;
-const bool DRAW_HITBOXES = true;
+const bool DRAW_HITBOXES = false;

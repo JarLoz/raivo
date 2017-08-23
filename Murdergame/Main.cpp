@@ -4,12 +4,14 @@
 #include "PlayerObject.h"
 #include "GameObjectManager.h"
 #include "InputManager.h"
+#include "SoundManager.h"
 #include "Globals.h"
 
 // Initializing singleton pointers.
 AssetManager* AssetManager::manager = NULL;
 GameObjectManager* GameObjectManager::manager = NULL;
 InputManager* InputManager::manager = NULL;
+SoundManager* SoundManager::manager = NULL;
 Vec2 cameraPosition(0.f,0.f);
 
 int main()
@@ -23,6 +25,7 @@ int main()
 
 	// Load assets;
 	AssetManager::getInstance()->loadAssets();
+	SoundManager::getInstance()->loadSounds();
 
 	// Initialize player object
 	GameObjectManager* gameObjectManager = GameObjectManager::getInstance();

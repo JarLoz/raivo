@@ -72,7 +72,7 @@ void GameObject::advanceCurrentFrame()
 
 bool GameObject::currentAnimationOver()
 {
-	if (currentFrame > (currentAnimation.frameCount * currentAnimation.speed) - 1) {
+	if (currentFrame > currentAnimation.speed - 1) {
 		return true;
 	}
 	return false;

@@ -1,6 +1,9 @@
 #include "PlayerObject.h"
 #include "GameObjectManager.h"
 #include "InputManager.h"
+#include "SoundManager.h"
+#include "Collision.h"
+#include "Globals.h"
 
 
 PlayerObject::PlayerObject()
@@ -20,31 +23,31 @@ void PlayerObject::update()
 	// Do all input-related things
 	handleInput();
 	// Handle state changes based on animations ending
+	GameObjectManager* gameObjectManager = GameObjectManager::getInstance();
+	EnemyObjectList::const_iterator i = gameObjectManager->getEnemies()->begin();
 	if (currentAnimationOver()) {
 		switch (state) {
 			case GameObject::ATTACK_WINDUP:
 				setState(GameObject::ATTACK);
 				setCurrentAnimation(ANIMATIONS[PLAYER_ATTACK]);
 				setCurrentFrame(0);
-				setSpeed(PLAYER_SPEED*2);
-				direction = attackDirection;
+				setSpeed(0);
+				SoundManager::getInstance()->playPlayerSwordSwing();
+				// If enemies under attack hitbox, then play sword hit animation also
+				while (i != gameObjectManager->getEnemies()->end()) {
+					EnemyObject* enemy = *i;
+					// If collision, move the player outside the enemy hitbox (or circle).
+					if (isColliding(getAttackPosition(), PLAYER_ATTACK_SIZE, enemy->position, enemy->radius)) {
+						SoundManager::getInstance()->playPlayerSwordHit();
+					}
+					i++;
+				}
 				break;
 			case GameObject::ATTACK:
 				setState(GameObject::IDLE);
 				setCurrentAnimation(ANIMATIONS[PLAYER_IDLE]);
 				setCurrentFrame(0);
 				setSpeed(PLAYER_SPEED);
-				break;
-		}
-	}
-	// If animations still running, handle other triggers.
-	else {
-		switch (state) {
-			// First 3 frames of attack animation move the player forwards towards the attack.
-			case GameObject::ATTACK:
-				if (currentFrame == 3) {
-					setSpeed(0);
-				}
 				break;
 		}
 	}
@@ -142,6 +145,11 @@ Vec2 PlayerObject::getDirection()
 		acceleration -= PLAYER_ACCELERATION_INCREMENT;
 	}
 	return newDirection * acceleration;
+}
+
+Vec2 PlayerObject::getAttackPosition()
+{
+	return position + attackDirection * 1.8f;
 }
 
 Vec2 PlayerObject::getRelativeMouseDirection() const
